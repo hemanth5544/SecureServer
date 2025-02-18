@@ -9,7 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 dotenv.config();
 
 const app = express();
- const db = new sqlite3.Database(':memory:');
+const db = new sqlite3.Database(':memory:');
 
 app.use(cors());
 app.use(express.json());

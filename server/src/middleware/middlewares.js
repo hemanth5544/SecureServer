@@ -6,7 +6,7 @@ export const authenticateToken = (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Access denied' });
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const verified = jwt.verify(token, process.env.JWT_SECRET || 'mrbean');
     req.user = verified;
     next();
   } catch (err) {
