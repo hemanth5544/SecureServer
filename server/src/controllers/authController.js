@@ -4,7 +4,7 @@ import { authenticator } from 'otplib';
 import {generateToken} from '../../util.js'
 
 
-
+//FIXME: Add salt while hasihing and add more sha algo
 export const signup = async (req, res) => {
   const { email, password } = req.body;
   console.log(email,password)
