@@ -27,6 +27,20 @@ db.serialize(() => {
       name TEXT
     )
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      ip_address TEXT NOT NULL,
+      browser_info TEXT NOT NULL,
+      status TEXT DEFAULT 'active',  -- Can be 'active' or 'inactive'
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+  
 });
 
 app.use('/api',authRoutes)
