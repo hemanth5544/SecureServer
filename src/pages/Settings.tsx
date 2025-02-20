@@ -4,16 +4,20 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Shield, ArrowLeft, Camera, User, Loader2 } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
+import { Link } from 'react-router-dom';
+import { Settings as SettingsIcon, LogOut} from 'lucide-react';
+
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user ,logout} = useAuth();
   const [isEnabling2FA, setIsEnabling2FA] = useState(false);
   const [qrCode, setQrCode] = useState('');
   const [token, setToken] = useState('');
   const [name, setName] = useState(user?.name || '');
   const [isUpdating, setIsUpdating] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);  
   console.log(user);
 
   const enable2FA = async () => {
@@ -107,6 +111,30 @@ console.log(user.profileImage);
 
   return (
     <div className="min-h-screen bg-background">
+       <nav className="bg-card shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <h1 className="text-xl font-bold text-card-foreground">Dashboard</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              <Link
+                to="/settings"
+                className="text-muted-foreground hover:text-card-foreground p-2 rounded-md hover:bg-accent transition-colors duration-200"
+              >
+                <SettingsIcon className="h-5 w-5" />
+              </Link>
+              <button
+                onClick={logout}
+                className="text-muted-foreground hover:text-card-foreground p-2 rounded-md hover:bg-accent transition-colors duration-200"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0 mb-4">
           <button
