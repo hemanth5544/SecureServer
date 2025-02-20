@@ -101,7 +101,7 @@ console.log(user.profileImage);
       );
 
       toast.success('Profile updated successfully');
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       toast.error('Failed to update profile');
     } finally {
