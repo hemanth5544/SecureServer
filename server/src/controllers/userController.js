@@ -15,6 +15,22 @@ export const user= async (req, res) => {
   };
 
 
+  export const getLastActivity = (req, res) => {
+    console.log(req.user.userId);
+  
+    db.get('SELECT browser_info, status,ip_address FROM sessions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1', [req.user.userId], (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: 'Server error while retrieving last activity from sessions' });
+      }
+  
+      if (!row) {
+        return res.status(404).json({ error: 'No session found for the user' });
+      }
+  
+      return res.json({ lastActivity: row });
+    });
+  };
+  
   
   export const updateUserProfile = (req, res) => {
     const { name } = req.body;
@@ -23,7 +39,7 @@ export const user= async (req, res) => {
     const userId = req.userId;  
     console.log(userId,"userIDDDDDDD")
 
-    console.log('Request body:', req.body);  // Log the request body (name and profile image)
+    console.log('Request body:', req.body);  
     console.log('Profile image path:', profileImage);  
   
     if (!name && !profileImage) {
@@ -34,9 +50,6 @@ export const user= async (req, res) => {
 
     const pathQuery = `SELECT profileImage FROM users WHERE id = ?`;
 
-    console.log('SQL Query for current image:', pathQuery);    
-    console.log('SQL Query:', query);  // Log the query for debugging
-    // console.log('SQL Params:', params);  // Log the query params for debugging
   
     const params = [name, profileImage, userId];
   
