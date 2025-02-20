@@ -9,7 +9,7 @@ import authRoutes from './routes/authRoutes.js';
 dotenv.config();
 
 const app = express();
-const db = new sqlite3.Database(':memory:');
+const db = new sqlite3.Database('./hemu.db');
 
 app.use(cors());
 app.use(express.json());
@@ -22,12 +22,17 @@ db.serialize(() => {
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       twoFactorSecret TEXT,
-      twoFactorEnabled INTEGER DEFAULT 0
+      twoFactorEnabled INTEGER DEFAULT 0,
+      profileImage TEXT,
+      name TEXT
     )
   `);
 });
 
 app.use('/api',authRoutes)
+app.use('/uploads', express.static('uploads'));  
+
+
 
 
 const PORT = process.env.PORT || 3000;

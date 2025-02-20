@@ -8,6 +8,7 @@ export const authenticateToken = (req, res, next) => {
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET || 'mrbean');
     req.user = verified;
+    req.userId=verified.userId
     next();
   } catch (err) {
     res.status(400).json({ error: 'Invalid token' });
