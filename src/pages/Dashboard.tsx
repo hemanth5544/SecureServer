@@ -107,7 +107,7 @@ export default function Dashboard() {
                           <strong>Browser Info:</strong>{" "}
                           {lastActivity.browser_info} <br />
                           <strong>Status:</strong> {lastActivity.status}<br/>
-                          <strong>Ip:</strong>{lastActivity.ip_addrress??" 0.0.0.0"}
+                          <strong>Ip:</strong>{lastActivity.ip_address}
                         </>
                       ) : (
                         "No activity found"
