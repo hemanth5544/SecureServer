@@ -12,7 +12,7 @@ interface User {
 interface LastActivity {
   browser_info: string;
   status: string;
-  ip_addrress:string;
+  ip_address:string;
 }
 
 interface AuthContextType {
@@ -21,6 +21,7 @@ interface AuthContextType {
   lastActivity: LastActivity | null;
   login: (token: string) => void;
   logout: () => void;
+  setToken:(sessionId: string)=> void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -38,11 +39,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       fetchLastActivity(token);
     }
   }, []);
-
   const fetchUser = async (token: string) => {
+    const sessionId = localStorage.getItem('sessionId');  
+    if (!sessionId) {
+      console.error('Session ID is missing');
+      return;
+    }
+  
     try {
       const response = await axios.get('http://localhost:3000/api/user', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,  
+          'x-session-id': sessionId        
+        }
       });
       setUser(response.data);
     } catch (error) {
@@ -50,12 +59,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logout();
     }
   };
-
+  
   const fetchLastActivity = async (token: string) => {
+    const sessionId = localStorage.getItem('sessionId');  
+    if (!sessionId) {
+      console.error('Session ID is missing');
+      return;
+    }
+  
     try {
       const response = await axios.get('http://localhost:3000/api/last-activity', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,  
+          'x-session-id': sessionId        
+        }
       });
+      console.log(response.data.lastActivity)
       setLastActivity(response.data.lastActivity);
     } catch (error) {
       console.error('Error fetching last activity:', error);
@@ -74,10 +93,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
     setUser(null);
     setLastActivity(null);
+    const sessionId = localStorage.getItem('sessionId'); 
+    if (sessionId) {
+      sendSessionStatus(sessionId); 
+    }
   };
 
+  const setToken=(sessionId:string)=>{
+    localStorage.setItem('sessionId',sessionId);
+  }
+  
+  const sendSessionStatus = async (sessionId: string) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/logout', {
+        sessionId, 
+      });
+      console.log(response.data.message); 
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+  
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, lastActivity, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, lastActivity, login, logout ,setToken}}>
       {children}
     </AuthContext.Provider>
   );

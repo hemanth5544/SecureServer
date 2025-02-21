@@ -18,17 +18,34 @@ export const user= async (req, res) => {
   export const getLastActivity = (req, res) => {
     console.log(req.user.userId);
   
-    db.get('SELECT browser_info, status,ip_address FROM sessions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1', [req.user.userId], (err, row) => {
+    db.get('SELECT browser_info, status,ip_address FROM sessions WHERE user_id = ? ORDER BY created_at DESC LIMIT 1 OFFSET 1', [req.user.userId], (err, row) => {
       if (err) {
         return res.status(500).json({ error: 'Server error while retrieving last activity from sessions' });
       }
   
       if (!row) {
-        return res.status(404).json({ error: 'No session found for the user' });
+        return res.status(200).json({ msg: 'No session found for the user' });
       }
   
       return res.json({ lastActivity: row });
     });
+  };
+  
+  export const getActiveSessions = (req, res) => {
+    console.log(req.user.userId);
+  
+    db.all('SELECT  * FROM sessions WHERE user_id = ? AND status = ? ORDER BY created_at DESC', 
+      [req.user.userId, 'active'], (err, rows) => {
+        if (err) {
+          return res.status(500).json({ error: 'Server error while retrieving active sessions' });
+        }
+  
+        if (rows.length === 0) {
+          return res.status(404).json({ error: 'No active sessions found for the user' });
+        }
+  
+        return res.json({ activeSessions: rows });
+      });
   };
   
   

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
@@ -17,17 +17,64 @@ export default function Settings() {
   const [token, setToken] = useState('');
   const [name, setName] = useState(user?.name || '');
   const [isUpdating, setIsUpdating] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);  
+  const [activeSessions, setActiveSessions] = useState([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   console.log(user);
+
+  const fetchActiveSessions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const sessionId = localStorage.getItem("sessionId");
+
+      const response = await axios.post(
+        "http://localhost:3000/api/activeSessions",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "x-session-id": sessionId,
+          },
+        }
+      );
+      setActiveSessions(response.data.activeSessions);
+    } catch (error) {
+      toast.error("Failed to fetch active sessions");
+    }
+  };
+
+  useEffect(() => {
+    fetchActiveSessions();
+  }, []);
+
+  // Handle logout for a specific session
+  const handleSessionLogout = async (sessionId: number) => {
+    try {
+
+
+      await axios.post(
+        `http://localhost:3000/api/logout/`,
+        {sessionId},
+    
+      );
+
+      toast.success("Logged out from the device successfully");
+      fetchActiveSessions(); 
+    } catch (error) {
+      toast.error("Failed to log out from the device");
+    }
+  };
 
   const enable2FA = async () => {
     try {
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('sessionId'); 
+
       const response = await axios.post(
         'http://localhost:3000/api/2fa/enable',
         {},
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}`,
+          'x-session-id': sessionId      }
         }
       );
       setQrCode(response.data.qrCode);
@@ -40,11 +87,14 @@ export default function Settings() {
   const verify2FA = async () => {
     try {
       const authToken = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('sessionId'); 
+
       await axios.post(
         'http://localhost:3000/api/2fa/verify',
         { token },
         {
-          headers: { Authorization: `Bearer ${authToken}` }
+          headers: { Authorization: `Bearer ${authToken}`,
+          'x-session-id': sessionId      }
         }
       );
       toast.success('2FA enabled successfully');
@@ -58,11 +108,14 @@ export default function Settings() {
   const disable2FA = async () => {
     try {
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('sessionId');  
+
       await axios.post(
         'http://localhost:3000/api/2fa/disable',
         {},
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}`,
+          'x-session-id': sessionId    }
         }
       );
       toast.success('2FA disabled successfully');
@@ -75,10 +128,11 @@ export default function Settings() {
   const handleProfileUpdate = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsUpdating(true);
-console.log(user.profileImage);
 
     try {
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('sessionId');  
+
       const formData = new FormData();
       
       if (name) {
@@ -95,6 +149,7 @@ console.log(user.profileImage);
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'x-session-id': sessionId   ,
             'Content-Type': 'multipart/form-data',
           }
         }
@@ -267,6 +322,32 @@ console.log(user.profileImage);
                     </button>
                   </div>
                 )}
+
+                {/* Active Devices Section */}
+                <div className="mt-6">
+                  <h3 className="text-md font-medium text-card-foreground">
+                    Active Devices
+                  </h3>
+                  <div className="space-y-4">
+                    {activeSessions.map((session) => (
+                      <div
+                        key={session.id}
+                        className="flex justify-between items-center"
+                      >
+                        <div className="text-sm text-muted-foreground">
+                          <p>{session.browser_info}</p>
+                          <p>{session.ip_address}</p>
+                        </div>
+                        <button
+                          onClick={() => handleSessionLogout(session.id)}
+                          className="px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/90 rounded-md"
+                        >
+                          Log Out
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

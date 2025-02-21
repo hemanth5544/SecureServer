@@ -7,7 +7,7 @@ import { Lock, Mail } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login ,setToken} = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,7 +19,8 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/api/login', formData);
-      login(response.data.token);
+      setToken(response.data.sessionId)  
+      login(response.data.token);  
       navigate('/');
     } catch (error: any) {
       if (error.response?.data?.error === '2FA token required') {
@@ -46,7 +47,7 @@ export default function Login() {
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border rounded-md text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
@@ -60,7 +61,7 @@ export default function Login() {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border  text-gray-700 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
