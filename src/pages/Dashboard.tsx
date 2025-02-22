@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   Settings as SettingsIcon,
@@ -9,9 +9,17 @@ import {
   Clock,
 } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { toast } from 'react-hot-toast';
 
 export default function Dashboard() {
   const { user, lastActivity, logout } = useAuth();
+  const navigate = useNavigate(); 
+
+  const handleLogout = () => {
+    logout(); 
+    navigate("/login"); 
+      toast.success("Logged out from the device successfully");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,7 +40,7 @@ export default function Dashboard() {
                 <SettingsIcon className="h-5 w-5" />
               </Link>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="text-muted-foreground hover:text-card-foreground p-2 rounded-md hover:bg-accent transition-colors duration-200"
               >
                 <LogOut className="h-5 w-5" />
