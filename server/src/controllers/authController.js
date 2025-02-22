@@ -104,3 +104,21 @@ export const logout = async (req, res) => {
     res.json({ message: "Logged out successfully" });
   });
 };
+export const logoutAll = async (req, res) => {
+  const userId=req.user.userId
+
+  if (!userId) return res.status(400).json({ error: "Session ID required" });
+
+  const updateSessionQuery = `
+    UPDATE sessions
+    SET status = 'inactive', updated_at = CURRENT_TIMESTAMP
+    WHERE user_id = ?
+  `;
+
+  db.run(updateSessionQuery, [userId], function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Error logging out" });
+    }
+    res.json({ message: "Logged out all devices successfully" });
+  });
+};
