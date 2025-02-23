@@ -22,6 +22,8 @@ export default function Login() {
       setToken(response.data.sessionId)  
       login(response.data.token);  
       navigate('/');
+      toast.success("Logged in successfully");
+      
     } catch (error: any) {
       if (error.response?.data?.error === '2FA token required') {
         setRequires2FA(true);
