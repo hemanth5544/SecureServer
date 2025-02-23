@@ -7,7 +7,7 @@ import { Shield, ArrowLeft, Camera, User, Loader2, X } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { Link } from 'react-router-dom';
 import { Settings as SettingsIcon, LogOut} from 'lucide-react';
-import { Home } from 'lucide-react';
+import { Home,Lock } from 'lucide-react';
 //FIXME: add a location feature by hitting ipai 
 export default function Settings() {
   const navigate = useNavigate();
@@ -19,6 +19,46 @@ export default function Settings() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [activeSessions, setActiveSessions] = useState([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const openChangePasswordModal = () => {
+    setIsChangePasswordModalOpen(true);
+  };
+
+  const closeChangePasswordModal = () => {
+    setIsChangePasswordModalOpen(false);
+    setCurrentPassword("");
+    setNewPassword("");
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const sessionId = localStorage.getItem("sessionId");
+
+      const response = await axios.post(
+        "http://localhost:3000/api/user/change-password",
+        {
+          currentPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "x-session-id": sessionId,
+          },
+        }
+      );
+
+      toast.success("Password changed successfully");
+      closeChangePasswordModal();
+    } catch (error) {
+      toast.error("Failed to change password. Please check your current password.");
+    }
+  };
+
 
   const fetchActiveSessions = async () => {
     try {
@@ -314,7 +354,7 @@ export default function Settings() {
                   </div>
                   <button
                     onClick={user?.twoFactorEnabled ? disable2FA : enable2FA}
-                    className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground ${
+                    className={`inline-flex items-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground ${
                       user?.twoFactorEnabled
                         ? "bg-destructive hover:bg-destructive/90"
                         : "bg-primary hover:bg-primary/90"
@@ -324,6 +364,25 @@ export default function Settings() {
                     {user?.twoFactorEnabled ? "Disable 2FA" : "Enable 2FA"}
                   </button>
                 </div>
+
+  <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-md font-medium text-card-foreground">
+              Change Password
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Update your account password
+            </p>
+          </div>
+          <button
+            onClick={openChangePasswordModal}
+            className="inline-flex items-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            <Lock className="h-5 w-5 mr-2" />
+            Change Password
+          </button>
+        </div>
+
 
                 {/* Active Devices Section */}
                 <div className="mt-6">
@@ -431,6 +490,60 @@ export default function Settings() {
           </div>
         </div>
       )}
+      {/* Change Password Modal */}
+      {isChangePasswordModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-card rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-medium text-card-foreground">
+                Change Password
+              </h2>
+              <button
+                onClick={closeChangePasswordModal}
+                className="text-muted-foreground hover:text-card-foreground"
+              >
+                <X className="h-5 w-5" /> {/* Close icon */}
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-1">
+                  Current Password
+                </label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground"
+                  placeholder="Enter current password"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-1">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground"
+                  placeholder="Enter new password"
+                />
+              </div>
+
+              <button
+                onClick={handleChangePassword}
+                className="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
