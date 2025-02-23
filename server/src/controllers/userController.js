@@ -1,5 +1,9 @@
+import { accessSync } from "fs";
 import db from "../index.js";
 import path from 'path';
+import bcrypt from "bcryptjs";
+import { error } from "console";
+
 
 
 export const user= async (req, res) => {
@@ -82,3 +86,52 @@ export const user= async (req, res) => {
     });
   };
   
+
+  export const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.userId; 
+    if(currentPassword==newPassword){
+      return res.status(400).json({ error: "Pookie both are same"})
+    }
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: "Current and new password required" });
+    }
+  
+    db.get("SELECT password FROM users WHERE id = ?", [userId], async (err, user) => {
+      if (err) {
+        return res.status(500).json({ error: "Server error" });
+      }
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      try {
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) {
+          return res.status(400).json({ error: "Current password is incorrect" });
+        }
+  
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+        db.run(
+          "UPDATE users SET password = ? WHERE id = ?",
+          [hashedPassword, userId],
+          function(err) {
+            if (err) {
+              return res.status(500).json({ error: "Error updating password" });
+            }
+  
+            if (this.changes === 0) {
+              return res.status(400).json({ error: "Password update failed" });
+            }
+  
+            res.json({ message: "Password updated successfully" });
+          }
+        );
+      } catch (error) {
+        console.error('Password change error:', error);
+        res.status(500).json({ error: "Server error" });
+      }
+    });
+  };
