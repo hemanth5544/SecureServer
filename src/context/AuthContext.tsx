@@ -89,14 +89,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-    setUser(null);
-    setLastActivity(null);
     const sessionId = localStorage.getItem('sessionId'); 
     if (sessionId) {
       sendSessionStatus(sessionId); 
     }
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setUser(null);
+    setLastActivity(null);
+  
+    console.log("in the logutttttt")
   };
 
   const setToken=(sessionId:string)=>{

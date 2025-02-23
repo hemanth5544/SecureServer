@@ -1,7 +1,7 @@
 import express from 'express';
 import { signup,login, logout,logoutAll } from '../controllers/authController.js'; 
 import {disableTwoFactor, enableTwoFactor,verifyTwoFactor} from '../controllers/twoFactorController.js'
-import {user,updateUserProfile,getActiveSessions} from '../controllers/userController.js'
+import {user,updateUserProfile,getActiveSessions,changePassword} from '../controllers/userController.js'
 import { authenticateToken ,checkSessionStatus} from '../middleware/middlewares.js';
 import { getLastActivity } from '../controllers/userController.js';
 import multer from 'multer';
@@ -31,5 +31,6 @@ router.get('/last-activity',checkSessionStatus, authenticateToken,getLastActivit
 router.post('/logout',logout)
 router.post('/activeSessions',authenticateToken,getActiveSessions)
 router.post('/logoutAll',authenticateToken,logoutAll)
+router.post('/updatePass',checkSessionStatus,authenticateToken,changePassword)
 
 export default router;
