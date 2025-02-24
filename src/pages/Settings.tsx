@@ -20,7 +20,7 @@ export default function Settings() {
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0 mb-4">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="flex items-center text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
