@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import db from "../index.js";
 import { authenticator } from "otplib";
-import { generateToken } from "../../util.js";
+import { generateToken,sendEmail } from "../../util.js";
 import useragent from "useragent";
 
 //FIXME: Add salt while hasihing and add more sha algo
@@ -16,10 +16,17 @@ export const signup = async (req, res) => {
       [email, hashedPassword],
       (err) => {
         if (err) {
-          res.status(400).json({ error: "Email already exists" });
-        } else {
-          res.json({ message: "User created successfully" });
+          return res.status(400).json({ error: "Email already exists" });
         }
+        res.json({ message: "User created successfully." });
+
+        const subject = "Signup Notification";
+        const message = `Hello, ${email}! You have successfully signed up.`;
+        const htmlMessage = `<h1>Signup Notification</h1><p>${message}</p>`;
+
+        sendEmail(email, subject, message).catch((emailError) => {
+          console.error("Error sending email:", emailError);
+        });
       }
     );
   } catch (error) {
@@ -49,6 +56,24 @@ export const login = async (req, res) => {
       if (!isValid) return res.status(400).json({ error: "Invalid 2FA token" });
     }
 
+    db.get("SELECT * FROM notifications WHERE user_id = ?", [user.id], async (err, notificationRecord) => {
+      if (err) return res.status(500).json({ error: "Database error" });
+
+      if (notificationRecord && notificationRecord.email_notifications_enabled) {
+        // Send an email notification (e.g., login notification)
+        const subject = "Login Notification";
+        const message = `Hello, ${user.name || 'User'}! You have successfully logged in.`;
+        const htmlMessage = `<h1>Login Notification</h1><p>${message}</p>`;
+
+        try {
+          await sendEmail(user.email, subject, message, htmlMessage);
+        } catch (err) {
+          console.error("Error sending email:", err);
+        }
+      }
+    });
+    
+
     const ipAddress =
       req.headers["x-forwarded-for"] ||
       req.connection.remoteAddress ||
@@ -57,7 +82,7 @@ export const login = async (req, res) => {
 
     const agent = useragent.parse(req.headers["user-agent"]);
     const browserInfo = ` ${agent.os.family} ${agent.family} `;
-    console.log(browserInfo);
+    console.log(browserInfo,agent);
 
     const sessionInsertQuery = `
       INSERT INTO sessions (user_id, ip_address, browser_info, status) 
