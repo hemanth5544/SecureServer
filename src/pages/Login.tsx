@@ -21,7 +21,7 @@ export default function Login() {
       const response = await axios.post('http://localhost:3000/api/login', formData);
       setToken(response.data.sessionId)  
       login(response.data.token);  
-      navigate('/');
+      navigate('/dashboard');
       toast.success("Logged in successfully");
       
     } catch (error: any) {
