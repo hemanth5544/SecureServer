@@ -9,7 +9,9 @@ import {
   Clock,
 } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
+import {SecurityStatus} from "../components/SecurityStatus"
 import { toast } from 'react-hot-toast';
+//TODO: Notifications flex in dasboard
 
 export default function Dashboard() {
   const { user, lastActivity, logout } = useAuth();
@@ -76,8 +78,15 @@ export default function Dashboard() {
                     <p className="text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
+                
+
               </div>
+          
+
+              <SecurityStatus/>
+
             </div>
+            
 
             <div className="bg-card shadow-lg rounded-lg overflow-hidden border">
               <div className="p-6">
