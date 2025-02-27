@@ -1,8 +1,9 @@
-import db from "../index";
+import db from "../index.js";
 
 export const updateNotificationPreferences = (req, res) => {
-  const { userId, enableNotifications } = req.body;
-
+  const {  enableNotifications } = req.body;
+  const userId=req.user.userId
+  
   if (userId == null || enableNotifications == null) {
     return res.status(400).json({ error: "Missing userId or enableNotifications" });
   }
@@ -39,6 +40,28 @@ export const updateNotificationPreferences = (req, res) => {
         }
         return res.json({ message: "Notification preferences set successfully" });
       });
+    }
+  });
+};
+
+export const getNotificationStatus = (req, res) => {
+  const userId=req.user.userId
+
+  const query = `
+    SELECT email_notifications_enabled
+    FROM notifications
+    WHERE user_id = ?
+  `;
+  
+  db.get(query, [userId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (row) {
+      return res.json({ email_notifications_enabled: row.email_notifications_enabled });
+    } else {
+      return res.status(404).json({ error: "User not found" });
     }
   });
 };

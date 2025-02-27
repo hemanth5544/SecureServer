@@ -4,6 +4,7 @@ import {disableTwoFactor, enableTwoFactor,verifyTwoFactor} from '../controllers/
 import {user,updateUserProfile,getActiveSessions,changePassword} from '../controllers/userController.js'
 import { authenticateToken ,checkSessionStatus} from '../middleware/middlewares.js';
 import { getLastActivity } from '../controllers/userController.js';
+import {updateNotificationPreferences,getNotificationStatus} from '../controllers/notficationController.js'
 import multer from 'multer';
 import path from 'path';
 
@@ -32,5 +33,6 @@ router.post('/logout',logout)
 router.post('/activeSessions',authenticateToken,getActiveSessions)
 router.post('/logoutAll',authenticateToken,logoutAll)
 router.post('/updatePass',checkSessionStatus,authenticateToken,changePassword)
-
+router.post('/notify',checkSessionStatus,authenticateToken,updateNotificationPreferences)
+router.get('/notifyStatus',checkSessionStatus,authenticateToken,getNotificationStatus)
 export default router;
