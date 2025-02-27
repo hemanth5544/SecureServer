@@ -13,7 +13,7 @@ const db = new sqlite3.Database('./hemu.db');
 
 app.use(cors());
 app.use(express.json());
-
+//TODO: last accesced in the device 
 // Initialize database
 db.serialize(() => {
   db.run(`
