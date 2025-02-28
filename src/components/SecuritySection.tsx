@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ChangePasswordModal } from './ChangePasswordModal';
 import { TwoFactorAuthModal } from './TwoFactorAuthModal';
 import { useNavigate } from 'react-router-dom';
-
+import EnableNotifications from './Notification';
 interface SecuritySectionProps {
   user: any;
   logout: () => void;
@@ -186,6 +186,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
               Change Password
             </button>
           </div>
+       <EnableNotifications/>
 
           <div className="mt-6">
             <div className="flex justify-between items-center">

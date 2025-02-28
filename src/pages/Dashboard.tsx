@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "../components/ThemeToggle";
 import {SecurityStatus} from "../components/SecurityStatus"
+import {NotificationStatus} from '../components/NotificationDashboard'
 import { toast } from 'react-hot-toast';
 //TODO: Notifications flex in dasboard
 
@@ -82,7 +83,7 @@ export default function Dashboard() {
 
               </div>
           
-
+              <NotificationStatus/>
               <SecurityStatus/>
 
             </div>
