@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import db from "../index.js";
 import { authenticator } from "otplib";
-import { generateToken,sendEmail } from "../../util.js";
+import { generateToken,sendEmail } from "../util.js";
 import useragent from "useragent";
 
 //FIXME: Add salt while hasihing and add more sha algo
@@ -21,10 +21,9 @@ export const signup = async (req, res) => {
         res.json({ message: "User created successfully." });
 
         const subject = "Signup Notification";
-        const message = `Hello, ${email}! You have successfully signed up.`;
-        const htmlMessage = `<h1>Signup Notification</h1><p>${message}</p>`;
+        const name ="hemanth"
 
-        sendEmail(email, subject, message).catch((emailError) => {
+        sendEmail(email, subject, name,email).catch((emailError) => {
           console.error("Error sending email:", emailError);
         });
       }
@@ -60,16 +59,13 @@ export const login = async (req, res) => {
       if (err) return res.status(500).json({ error: "Database error" });
 
       if (notificationRecord && notificationRecord.email_notifications_enabled) {
-        // Send an email notification (e.g., login notification)
+        
         const subject = "Login Notification";
-        const message = `Hello, ${user.name || 'User'}! You have successfully logged in.`;
-        const htmlMessage = `<h1>Login Notification</h1><p>${message}</p>`;
+        const name ="hemanth"
 
-        try {
-          await sendEmail(user.email, subject, message, htmlMessage);
-        } catch (err) {
-          console.error("Error sending email:", err);
-        }
+        await sendEmail(email, subject, name,email).catch((emailError) => {
+          console.error("Error sending email:", emailError);
+        });
       }
     });
     
