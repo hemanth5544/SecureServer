@@ -61,7 +61,7 @@ export const getNotificationStatus = (req, res) => {
     if (row) {
       return res.json({ email_notifications_enabled: row.email_notifications_enabled });
     } else {
-      return res.status(404).json({ error: "User not found" });
+      return res.json({ msg : "user not enabled" });
     }
   });
 };
