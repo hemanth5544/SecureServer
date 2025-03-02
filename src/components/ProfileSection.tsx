@@ -10,6 +10,7 @@ interface ProfileSectionProps {
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
   const [name, setName] = useState(user?.name || '');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleProfileUpdate = async (event: React.FormEvent) => {
@@ -24,8 +25,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
       if (name) {
         formData.append('name', name);
       }
-      if (fileInputRef.current?.files?.[0]) {
-        formData.append('profileImage', fileInputRef.current.files[0]);
+      if (selectedImage) {  // Use the selected image instead of fileInputRef
+        formData.append('profileImage', selectedImage);
       }
 
       await axios.post('http://localhost:3000/api/user/profile', formData, {
@@ -44,6 +45,12 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
     }
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
+
   return (
     <div className="bg-card shadow-lg rounded-lg overflow-hidden border max-w-sm ml-auto">
       <div className="p-6">
@@ -52,7 +59,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">
               <div className="w-32 h-32 rounded-full overflow-hidden bg-accent flex items-center justify-center">
-                {user?.profileImage ? (
+                {selectedImage ? (  
+                  <img
+                    src={URL.createObjectURL(selectedImage)} 
+                    alt="Selected Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : user?.profileImage ? (  
                   <img
                     src={`http://localhost:3000${user.profileImage}`}
                     alt="Profile"
@@ -70,7 +83,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
                 <Camera className="w-4 h-4" />
               </button>
             </div>
-            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" />
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageChange} 
+            />
           </div>
 
           <div>
