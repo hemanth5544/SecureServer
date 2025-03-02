@@ -18,8 +18,6 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
   const [activeSessions, setActiveSessions] = useState([]);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const navigate = useNavigate();
-  console.log('logout prop:', logout); // Debugging: Check if logout is a function
-
 
 
   const fetchActiveSessions = async () => {

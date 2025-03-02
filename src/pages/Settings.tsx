@@ -15,7 +15,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background">
-         <Navbar onLogout={logout} />
+         <Navbar/>
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0 mb-4">
@@ -29,9 +29,12 @@ export default function Settings() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <ProfileSection user={user} />
+         
+        <ProfileSection user={user} /> 
           <SecuritySection user={user} logout={logout} />
+         
         </div>
+      
       </div>
     </div>
   );

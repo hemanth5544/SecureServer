@@ -66,14 +66,24 @@ export const user= async (req, res) => {
     if (!name && !profileImage) {
       return res.status(400).json({ message: 'No profile data to update' });
     }
-  
-    const query = `UPDATE users SET name = ?, profileImage = ? WHERE id = ?`;
 
-    const pathQuery = `SELECT profileImage FROM users WHERE id = ?`;
+    let query = 'UPDATE users SET';
+    const params = [];
 
-  
-    const params = [name, profileImage, userId];
-  
+    if (name) {
+        query += ' name = ?';
+        params.push(name);
+    }
+
+    if (profileImage) {
+        if (params.length > 0) query += ',';
+        query += ' profileImage = ?';
+        params.push(profileImage);
+    }
+
+    query += ' WHERE id = ?';
+    params.push(userId);
+
     db.run(query, params, function (err) {
       if (err) {
         return res.status(500).json({ message: 'Failed to update profile', error: err });

@@ -2,17 +2,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Settings as SettingsIcon, LogOut } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import toast from 'react-hot-toast';
+import { useAuth } from "../context/AuthContext";
 
-interface NavbarProps {
-  onLogout: () => void;
-}
 
-export const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
-  const navigate = useNavigate();
+export const Navbar = () => {
+   const { user, lastActivity, logout } = useAuth();
+    const navigate = useNavigate(); 
+  
 
   const handleLogout = () => {
-    onLogout(); // Call the logout function passed as a prop
-    navigate('/login'); // Navigate to the login page
+    logout(); 
+    navigate('/login'); 
     toast.success("Logged out from the device successfully!!")
   };
 
