@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { NotificationStatus } from "./NotificationDashboard";
 import { SecurityStatus } from "./SecurityStatus";
 import { Shield} from "lucide-react";
@@ -9,7 +9,6 @@ export const UserProfileCard = () => {
   const { user } = useAuth();
 
   return (
-    <div className="bg-card shadow-lg rounded-lg overflow-hidden border">
       <div className="p-6">
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -41,8 +40,7 @@ export const UserProfileCard = () => {
           </div>
         </div>
       </div>
-      <NotificationStatus/>
-     <SecurityStatus/>
-    </div>
+     
+  
   );
 };
