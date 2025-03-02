@@ -7,7 +7,6 @@ const EnableNotifications = ({ userId }) => {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false); // Default state for notifications
   const [isLoading, setIsLoading] = useState(false); // To show loading state during API call
 
-  // Fetch the user's notification status when the component mounts
   useEffect(() => {
     const fetchNotificationStatus = async () => {
       try {

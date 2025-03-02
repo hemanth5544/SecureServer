@@ -45,7 +45,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user }) => {
   };
 
   return (
-    <div className="bg-card shadow-lg rounded-lg overflow-hidden border">
+    <div className="bg-card shadow-lg rounded-lg overflow-hidden border max-w-sm ml-auto">
       <div className="p-6">
         <h2 className="text-lg font-medium text-card-foreground mb-4">Profile Settings</h2>
         <form onSubmit={handleProfileUpdate} className="space-y-4">
