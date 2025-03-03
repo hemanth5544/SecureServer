@@ -14,7 +14,14 @@ interface LastActivity {
   status: string;
   ip_address:string;
 }
-
+interface Device {
+  id: number;
+  ip: string;
+  browser: string;
+  status: string;
+  lat: number;
+  lng: number;
+}
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
@@ -22,6 +29,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   setToken:(sessionId: string)=> void;
+  activeDevices: Device[];
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -30,6 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [lastActivity, setLastActivity] = useState<LastActivity | null>(null);
+  const [activeDevices, setActiveDevices] = useState<Device[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -37,8 +46,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true);
       fetchUser(token);
       fetchLastActivity(token);
+      fetchActiveDevices();
     }
   }, []);
+  const fetchActiveDevices = () => {
+    const token = localStorage.getItem('token');
+    const sessionId = localStorage.getItem('sessionId');
+    if (token && sessionId) {
+      axios
+        .get('http://localhost:3000/api/active-devices', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'x-session-id': sessionId,
+          },
+        })
+        .then((response) => {
+          setActiveDevices(response.data);
+        })
+        .catch((err) => {
+          console.error('Error fetching active devices:', err);
+        });
+    }
+  };
   const fetchUser = async (token: string) => {
     const sessionId = localStorage.getItem('sessionId');  
     if (!sessionId) {
@@ -118,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, lastActivity, login, logout ,setToken}}>
+    <AuthContext.Provider value={{ isAuthenticated, user, lastActivity, activeDevices,login, logout ,setToken}}>
       {children}
     </AuthContext.Provider>
   );
