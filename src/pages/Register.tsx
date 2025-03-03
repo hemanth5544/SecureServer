@@ -47,7 +47,7 @@ export default function Register() {
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border rounded-md  text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
@@ -61,7 +61,7 @@ export default function Register() {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border rounded-md  text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
@@ -75,7 +75,7 @@ export default function Register() {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-2 border rounded-md  text-gray-700 focus:ring-blue-500 focus:border-blue-500"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               />
