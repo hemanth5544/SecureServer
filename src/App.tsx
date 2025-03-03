@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { SecDashboard } from './pages/SecDashboard';
 
 const queryClient = new QueryClient();
 
@@ -42,7 +43,16 @@ function App() {
                     // </PrivateRoute>
                   }
                 />
+                   <Route
+                  path="/sec-das"
+                  element={
+                    // <PrivateRoute>
+                      < SecDashboard/>
+                    // </PrivateRoute>
+                  }
+                />
               </Routes>
+              
             </div>
           </BrowserRouter>
           <Toaster position="top-right" />
