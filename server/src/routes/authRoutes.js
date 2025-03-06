@@ -5,6 +5,7 @@ import {user,updateUserProfile,getActiveSessions,changePassword} from '../contro
 import { authenticateToken ,checkSessionStatus} from '../middleware/middlewares.js';
 import { getLastActivity } from '../controllers/userController.js';
 import {updateNotificationPreferences,getNotificationStatus} from '../controllers/notficationController.js'
+import { geolocation,fetchGeolocations } from '../controllers/geoLocationController.js';
 import multer from 'multer';
 import path from 'path';
 
@@ -35,4 +36,8 @@ router.post('/logoutAll',authenticateToken,logoutAll)
 router.post('/updatePass',checkSessionStatus,authenticateToken,changePassword)
 router.post('/notify',checkSessionStatus,authenticateToken,updateNotificationPreferences)
 router.get('/notifyStatus',checkSessionStatus,authenticateToken,getNotificationStatus)
+router.post('/geo-locations',checkSessionStatus,authenticateToken,geolocation)
+router.get('/active-devices',checkSessionStatus,authenticateToken,fetchGeolocations)
+
+
 export default router;

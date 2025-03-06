@@ -37,7 +37,7 @@ export const checkSessionStatus = (req, res, next) => {
     if (row.status === 'inactive') {
       return res.status(400).json({ error: 'Session is inactive' });
     }
-
+  req.sessionId=sessionId
     next();
   });
 };
