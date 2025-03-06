@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import sqlite3 from 'sqlite3';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit'
 
 import authRoutes from './routes/authRoutes.js';
 
@@ -11,6 +12,13 @@ dotenv.config();
 const app = express();
 const db = new sqlite3.Database('./hemu.db');
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
 //TODO: last accesced in the device 
@@ -33,6 +41,8 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       ip_address TEXT NOT NULL,
+      latitude REAL,
+      longitude REAL,
       browser_info TEXT NOT NULL,
       status TEXT DEFAULT 'active',  -- Can be 'active' or 'inactive'
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
