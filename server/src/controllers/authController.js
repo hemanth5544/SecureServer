@@ -33,71 +33,143 @@ export const signup = async (req, res) => {
   }
 };
 
+
+const handleDatabaseError = (res, err) => {
+  console.error('Database error:', err);
+  return res.status(500).json({ error: 'Database error' });
+};
+
+const findUserByEmail = (email, callback) => {
+  db.get('SELECT * FROM users WHERE email = ?', [email], callback);
+};
+
+const validatePassword = async (password, userPassword) => {
+  return await bcrypt.compare(password, userPassword);
+};
+
+const validateTwoFactorToken = (token, secret) => {
+  return authenticator.verify({ token, secret });
+};
+
+const sendLoginNotification = async (email, name) => {
+  const subject = 'Login Notification';
+  await sendEmail(email, subject, name, email).catch((emailError) => {
+    console.error('Error sending email:', emailError);
+  });
+};
+
+const createSession = (userId, ipAddress, browserInfo, callback) => {
+  const sessionInsertQuery = `
+    INSERT INTO sessions (user_id, ip_address, browser_info, status) 
+    VALUES (?, ?, ?, ?)
+  `;
+  db.run(sessionInsertQuery, [userId, ipAddress, browserInfo, 'active'], callback);
+};
+
+const generateDeviceName = (browserInfo, ipAddress) => {
+  return `${browserInfo}-${ipAddress}`;
+};
+
+const updateDeviceRecord = (userId, deviceName, isSuccess, callback) => {
+  db.get(
+    'SELECT * FROM devices WHERE user_id = ? AND device_name = ?',
+    [userId, deviceName],
+    (err, row) => {
+      if (err) return callback(err);
+
+      if (row) {
+        const updateQuery = `
+          UPDATE devices
+          SET
+            success_attempts = success_attempts + ?,
+            fail_attempts = fail_attempts + ?,
+            last_attempted_at = CURRENT_TIMESTAMP
+          WHERE user_id = ? AND device_name = ?
+        `;
+        const successAttempts = isSuccess ? 1 : 0;
+        const failAttempts = isSuccess ? 0 : 1;
+        db.run(updateQuery, [successAttempts, failAttempts, userId, deviceName], callback);
+      } else {
+        const insertQuery = `
+          INSERT INTO devices (user_id, device_name, success_attempts, fail_attempts, last_attempted_at)
+          VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+        `;
+        const successAttempts = isSuccess ? 1 : 0;
+        const failAttempts = isSuccess ? 0 : 1;
+        db.run(insertQuery, [userId, deviceName, successAttempts, failAttempts], callback);
+      }
+    }
+  );
+};
+
 export const login = async (req, res) => {
   const { email, password, token } = req.body;
 
-  db.get("SELECT * FROM users WHERE email = ?", [email], async (err, user) => {
-    if (err) return res.status(500).json({ error: "Server error" });
-    if (!user) return res.status(400).json({ error: "User not found" });
+  try {
+    findUserByEmail(email, async (err, user) => {
+      
+      if (err) return handleDatabaseError(res, err);
+      if (!user) return res.status(400).json({ error: 'User not found' });
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return res.status(400).json({ error: "Invalid password" });
+      const validPassword = await validatePassword(password, user.password);
+      if (!validPassword) {
 
-    if (user.twoFactorEnabled) {
-      if (!token) return res.status(400).json({ error: "2FA token required" });
+        const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.ip;
+        const agent = useragent.parse(req.headers['user-agent']);
+        const browserInfo = ` ${agent.os.family} ${agent.family} `;
+        const deviceName = generateDeviceName(browserInfo, ipAddress);
 
-      const isValid = authenticator.verify({
-        token,
-        secret: user.twoFactorSecret,
-      });
-
-      if (!isValid) return res.status(400).json({ error: "Invalid 2FA token" });
-    }
-
-    db.get("SELECT * FROM notifications WHERE user_id = ?", [user.id], async (err, notificationRecord) => {
-      if (err) return res.status(500).json({ error: "Database error" });
-
-      if (notificationRecord && notificationRecord.email_notifications_enabled) {
-        
-        const subject = "Login Notification";
-        const name ="hemanth"
-
-        await sendEmail(email, subject, name,email).catch((emailError) => {
-          console.error("Error sending email:", emailError);
+        updateDeviceRecord(user.id, deviceName, false, (err) => {
+          if (err) return handleDatabaseError(res, err);
+          return res.status(400).json({ error: 'Invalid password' });
         });
+        return;
       }
-    });
-    
 
-    const ipAddress =
-      req.headers["x-forwarded-for"] ||
-      req.connection.remoteAddress ||
-      req.socket.remoteAddress ||
-      req.ip;
+      if (user.twoFactorEnabled) {
+        if (!token) return res.status(400).json({ error: '2FA token required' });
+        const isValid = validateTwoFactorToken(token, user.twoFactorSecret);
+        if (!isValid) {
+          const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.ip;
+          const agent = useragent.parse(req.headers['user-agent']);
+          const browserInfo = ` ${agent.os.family} ${agent.family} `;
+          const deviceName = generateDeviceName(browserInfo, ipAddress);
 
-    const agent = useragent.parse(req.headers["user-agent"]);
-    const browserInfo = ` ${agent.os.family} ${agent.family} `;
-    console.log(browserInfo,agent);
-
-    const sessionInsertQuery = `
-      INSERT INTO sessions (user_id, ip_address, browser_info, status) 
-      VALUES (?, ?, ?, ?)
-    `;
-
-    db.run(
-      sessionInsertQuery,
-      [user.id, ipAddress, browserInfo, "active"],
-      function (err) {
-        if (err) {
-          return res.status(500).json({ error: "Error creating session" });
+          updateDeviceRecord(user.id, deviceName, false, (err) => {
+            if (err) return handleDatabaseError(res, err);
+            return res.status(400).json({ error: 'Invalid 2FA token' });
+          });
+          return;
         }
-
-        const jwtToken = generateToken(user.id);
-        res.json({ token: jwtToken, sessionId: this.lastID });
       }
-    );
-  });
+
+      const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.ip;
+      const agent = useragent.parse(req.headers['user-agent']);
+      const browserInfo = ` ${agent.os.family} ${agent.family} `;
+      const deviceName = generateDeviceName(browserInfo, ipAddress);
+
+      updateDeviceRecord(user.id, deviceName, true, (err) => {
+        if (err) return handleDatabaseError(res, err);
+
+        db.get('SELECT * FROM notifications WHERE user_id = ?', [user.id], async (err, notificationRecord) => {
+          if (err) return handleDatabaseError(res, err);
+          if (notificationRecord && notificationRecord.email_notifications_enabled) {
+            await sendLoginNotification(email, 'hemanth');
+          }
+
+          createSession(user.id, ipAddress, browserInfo, function (err) {
+            if (err) return handleDatabaseError(res, err);
+
+            const jwtToken = generateToken(user.id);
+            res.json({ token: jwtToken, sessionId: this.lastID });
+          });
+        });
+      });
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 };
 
 export const logout = async (req, res) => {
