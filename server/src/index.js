@@ -62,6 +62,19 @@ db.serialize(() => {
     )
   `);
   
+    db.run(`
+    CREATE TABLE IF NOT EXISTS devices (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      device_name TEXT NOT NULL,
+      fail_attempts INTEGER DEFAULT 0,
+      success_attempts INTEGER DEFAULT 0,
+      last_attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+      
+  );
+  `);
+  
 });
 
 app.use('/api',authRoutes)
