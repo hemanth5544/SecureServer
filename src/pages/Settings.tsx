@@ -2,8 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft } from 'lucide-react';
-import { ProfileSection } from '../components/ProfileSection';
-import { SecuritySection } from '../components/SecuritySection';
+import { ProfileSection } from '../components/SettingComponets/ProfileSection';
+import { SecuritySection } from '../components/SettingComponets/SecuritySection';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { Navbar } from '../components/Navbar';
 
