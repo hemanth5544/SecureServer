@@ -6,6 +6,7 @@ import { authenticateToken ,checkSessionStatus} from '../middleware/middlewares.
 import { getLastActivity } from '../controllers/userController.js';
 import {updateNotificationPreferences,getNotificationStatus} from '../controllers/notficationController.js'
 import { geolocation,fetchGeolocations } from '../controllers/geoLocationController.js';
+import {deviceStatus} from '../controllers/deviceController.js'
 import multer from 'multer';
 import path from 'path';
 
@@ -38,6 +39,7 @@ router.post('/notify',checkSessionStatus,authenticateToken,updateNotificationPre
 router.get('/notifyStatus',checkSessionStatus,authenticateToken,getNotificationStatus)
 router.post('/geo-locations',checkSessionStatus,authenticateToken,geolocation)
 router.get('/active-devices',checkSessionStatus,authenticateToken,fetchGeolocations)
+router.get('/devices',authenticateToken,deviceStatus)
 
 
 export default router;
