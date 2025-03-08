@@ -1,8 +1,5 @@
-import React from "react";
 import { User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { NotificationStatus } from "./NotificationDashboard";
-import { SecurityStatus } from "./SecurityStatus";
 import { Shield} from "lucide-react";
 
 export const UserProfileCard = () => {
