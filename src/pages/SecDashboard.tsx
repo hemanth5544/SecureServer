@@ -1,41 +1,11 @@
 import { useEffect,useState}from "react";
 import { GlobeComponent } from "../components/SecDasComponets/GlobeComponent";
+import { CustomGraph } from "../components/SecDasComponets/GraphComponet";
 import { Navbar } from "../components/Navbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
 export const SecDashboard = () => {
-  const [devices, setDevices] = useState([]); 
-  useEffect(() => {
-    const fetchActiveDevices = async () => {
-      const token = localStorage.getItem("token");
-      const sessionId = localStorage.getItem("sessionId");
-
-      if (!token || !sessionId) {
-        toast.error("Authentication required.");
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/devices",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "x-session-id": sessionId,
-            },
-          }
-        );
-        setDevices(response.data.devices); // Update state with the fetched devices
-      } catch (error) {
-        console.error("Error fetching active devices:", error);
-        toast.error("Error fetching active devices.");
-      }
-    };
-
-    fetchActiveDevices();
-  }, []);
-
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -81,29 +51,11 @@ export const SecDashboard = () => {
   }, []);
 
   return (
- 
     <div className="relative h-screen">
-    
       <GlobeComponent />
-      <Navbar/>
-      <h1>Audit Logs</h1>
-      <div>
-        <h2>Active Devices</h2>
-        {devices.length > 0 ? (
-          <ul>
-            {devices.map((device) => (
-              <li key={device.id}>
-                <p>Device Name: {device.device_name}</p>
-                <p>Successful Attempts: {device.success_attempts}</p>
-                <p>Failed Attempts: {device.fail_attempts}</p>
-                <p>Last Attempted At: {device.last_attempted_at}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No active devices found.</p>
-        )}
-        </div>
-            </div>
+      <Navbar />
+      <CustomGraph />
+      
+    </div>
   );
 };
