@@ -19,6 +19,7 @@ export default function Dashboard() {
               <NotificationStatus />
               <SecurityStatus />
               <RateLimitingStatus />
+              <h1 className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"> implement the redis in the backend</h1>
             </div>
 
             <DashboardStats />
