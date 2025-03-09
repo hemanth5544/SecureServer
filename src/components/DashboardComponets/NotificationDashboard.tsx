@@ -12,7 +12,7 @@ export const NotificationStatus = () => {
             <h3 className="text-lg font-semibold text-card-foreground">
               Notifications
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground h-10">
               You can get alerts on login and signups
             </p>
           </div>

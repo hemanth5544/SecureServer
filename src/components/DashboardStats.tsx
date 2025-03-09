@@ -34,7 +34,7 @@ export const DashboardStats = () => {
           {/* Last Activity Content */}
           <div>
             <h3 className="text-lg font-semibold text-card-foreground">
-              Last Activity
+              Recent Activity
             </h3>
             <p className="text-muted-foreground">
               {lastActivity ? (
