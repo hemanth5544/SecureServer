@@ -1,6 +1,6 @@
 import { useEffect,useState}from "react";
 import { GlobeComponent } from "../components/SecDasComponets/GlobeComponent";
-import { CustomGraph } from "../components/SecDasComponets/GraphComponet";
+import { DetailsDashboard } from "../components/SecDasComponets/GraphComponet";
 import { Navbar } from "../components/Navbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -52,9 +52,8 @@ export const SecDashboard = () => {
 
   return (
     <div className="relative h-screen">
-      <GlobeComponent />
       <Navbar />
-      <CustomGraph />
+      <DetailsDashboard />
       
     </div>
   );

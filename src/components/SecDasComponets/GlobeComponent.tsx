@@ -6,7 +6,7 @@ export const GlobeComponent = () => {
   console.log(activeDevices);
   
   return (
-    <div className="absolute top-20 right-0 w-[400px] h-[400px] overflow-hidden">
+    <div className="absolute top-50 right-20 w-[400px] h-[400px] overflow-hidden">
       <Globe
         width={400}
         height={400}
