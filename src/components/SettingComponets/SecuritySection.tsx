@@ -44,6 +44,8 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
   const logoutAll = async () => {
     try {
       const token = localStorage.getItem('token');
+      const sessionId = localStorage.getItem('sessionId');
+
 
       await axios.post(
         'http://localhost:3000/api/logoutAll',
@@ -51,11 +53,12 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'x-session-id': sessionId,
           },
         }
       );
       toast.success('Logged out from all devices');
-      logout();
+      // logout();
       navigate('/login');
     } catch (error) {
       toast.error('No user logged in');
@@ -65,14 +68,25 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
   const handleSessionLogout = async (sessionId: string) => {
     try {
       const currentSession = localStorage.getItem('sessionId');
+      const token= localStorage.getItem('token')
       if (sessionId == currentSession) {
         logout();
         navigate('/login');
-      }
+      } else{
 
-      await axios.post(`http://localhost:3000/api/logout/`, { sessionId });
+      await axios.post(
+        'http://localhost:3000/api/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'x-session-id': sessionId,
+          },
+        }
+      );
       toast.success('Logged out from the device successfully');
-      fetchActiveSessions();
+      // fetchActiveSessions();
+    }
     } catch (error) {
       toast.error('Failed to log out from the device');
     }
@@ -200,7 +214,8 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
 
             <div className="space-y-4 mt-4">
               {activeSessions.map((session) => {
-                const isCurrentSession = session.id == localStorage.getItem('sessionId');
+                const isCurrentSession = session.sessionId == localStorage.getItem('sessionId');
+                console.log(localStorage.getItem('sessionId'))
                 return (
                   <div key={session.id} className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
@@ -211,7 +226,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
                       {isCurrentSession && <Home className="h-4 w-4 text-primary" />}
                     </div>
                     <button
-                      onClick={() => handleSessionLogout(session.id)}
+                      onClick={() => handleSessionLogout(session.sessionId)}
                       className="w-25 h-9 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-destructive-foreground bg-destructive hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-destructive disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <LogOut className="h-4 w-4 mr-2" />

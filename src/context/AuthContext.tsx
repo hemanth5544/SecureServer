@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    const sessionId = localStorage.getItem('sessionId'); 
+    const sessionId = localStorage.getItem('sessionId');   
     if (sessionId) {
       sendSessionStatus(sessionId); 
     }
@@ -135,10 +135,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
   
   const sendSessionStatus = async (sessionId: string) => {
+
     try {
-      const response = await axios.post('http://localhost:3000/api/logout', {
-        sessionId, 
-      });
+      const token= localStorage.getItem('token')
+      const response = await axios.post(
+        'http://localhost:3000/api/logout', 
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'x-session-id': sessionId  
+          }
+        }
+      );
       console.log(response.data.message); 
     } catch (error) {
       console.error('Error logging out:', error);
