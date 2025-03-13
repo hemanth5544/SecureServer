@@ -22,6 +22,7 @@ app.use(limiter);
 app.use(cors());
 app.use(express.json());
 //TODO: last accesced in the device 
+//TODO: joined in "DD-MM_YYYY"
 // Initialize database
 db.serialize(() => {
   db.run(`
@@ -39,6 +40,7 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS sessions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sessionId TEXT UNIQUE,
       user_id INTEGER NOT NULL,
       ip_address TEXT NOT NULL,
       latitude REAL,
