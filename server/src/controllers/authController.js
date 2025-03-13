@@ -251,7 +251,7 @@ export const logoutAll = async (req, res) => {
 
       if (userSessionKeys.length > 0) {
         await client.del(userSessionKeys);
-      }
+        await client.del(`userSessions:${userId}`);      }
     }
 
     const deleteSessionsQuery = 'DELETE FROM sessions WHERE user_id = ?';
