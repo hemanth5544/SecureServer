@@ -31,7 +31,7 @@ router.post('/2fa/disable',checkSessionStatus,authenticateToken,disableTwoFactor
 router.get('/user',authenticateToken,checkSessionStatus,user)
 router.post('/user/profile',checkSessionStatus, authenticateToken, upload.single('profileImage'), updateUserProfile);  
 router.get('/last-activity',checkSessionStatus, authenticateToken,getLastActivity); 
-router.post('/logout',logout)
+router.post('/logout',checkSessionStatus,authenticateToken,logout)
 router.post('/activeSessions',authenticateToken,getActiveSessions)
 router.post('/logoutAll',authenticateToken,logoutAll)
 router.post('/updatePass',checkSessionStatus,authenticateToken,changePassword)
