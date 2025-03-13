@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer";
 import fs from 'fs';
 import path from 'path'
+import crypto from 'crypto';
+import client  from './db/redisClient.js'
 
 export const generateToken = (userId) => {
     return jwt.sign({ userId }, process.env.JWT_SECRET || 'mrbean', { expiresIn: '24h' });
@@ -46,4 +48,21 @@ export const sendEmail = async (to, subject, userName, userEmail) => {
     console.error('Error sending email:', error);
     throw error;
   }
+};
+
+
+export const generateHashedSessionId = () => {
+  return crypto.randomBytes(16).toString('hex'); 
+};
+
+
+export const isRedisAvailable = async () => {
+  // try {
+    
+  //   await client.ping();
+  //   return true;
+  // } catch (err) {
+  //   console.error('Redis is unavailable:', err);
+    return false;
+  // }
 };
