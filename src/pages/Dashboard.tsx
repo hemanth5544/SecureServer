@@ -4,6 +4,7 @@ import { DashboardStats } from "../components/DashboardStats";
 import { NotificationStatus } from "../components/DashboardComponets/NotificationDashboard";
 import { SecurityStatus } from "../components/DashboardComponets/SecurityStatus";
 import { RateLimitingStatus } from "../components/DashboardComponets/ApiLimmiter";
+import {RedisStatus} from '../components/DashboardComponets/RedisComponent'
 //TODO: Notifications flex in dasboard
 
 export default function Dashboard() {
@@ -16,10 +17,12 @@ export default function Dashboard() {
           <div className="grid gap-6 md:grid-cols-2">
             <div className="bg-card shadow-lg rounded-lg overflow-hidden border">
               <UserProfileCard />
+              <RedisStatus/>
               <NotificationStatus />
               <SecurityStatus />
               <RateLimitingStatus />
-              <h1 className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"> implement the redis in the backend</h1>
+             
+
             </div>
 
             <DashboardStats />
