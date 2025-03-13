@@ -85,7 +85,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
         }
       );
       toast.success('Logged out from the device successfully');
-      // fetchActiveSessions();
+      fetchActiveSessions();
     }
     } catch (error) {
       toast.error('Failed to log out from the device');
