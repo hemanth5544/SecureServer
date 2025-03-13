@@ -71,7 +71,9 @@ const createSession = async (userId, ipAddress, browserInfo, callback) => {
   `;
 
   db.run(sessionInsertQuery, [userId, ipAddress, browserInfo, 'active', sessionId], async function (err) {
-    if (err) return callback(err);
+    if (err) {
+      return callback(err);
+    }
 
     const sessionData = {
       userId,
@@ -81,19 +83,21 @@ const createSession = async (userId, ipAddress, browserInfo, callback) => {
       createdAt: new Date().toISOString(),
     };
     if (await isRedisAvailable()) {
-    try {
-      await client.set(`session:${sessionId}`, JSON.stringify(sessionData), {
-        EX: 86400, 
-      });
-      await client.sAdd(`userSessions:${userId}`, sessionId);
-      callback(null, sessionId);
-    } catch (err) {
-      callback(err);
+      try {
+        await client.set(`session:${sessionId}`, JSON.stringify(sessionData), {
+          EX: 86400,
+        });
+        await client.sAdd(`userSessions:${userId}`, sessionId);
+        
+        return callback(null, sessionId);
+      } catch (err) {
+        return callback(err); 
+      }
     }
-  }
-  callback(null, sessionId);
+    return callback(null, sessionId);
   });
 };
+
 const generateDeviceName = (browserInfo, ipAddress) => {
   return `${browserInfo}-${ipAddress}`;
 };
@@ -204,6 +208,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   const sessionId = req.sessionId;
+  const userId = req.user.userId;
 
   if (!sessionId) {
     return res.status(400).json({ error: 'Session ID is required' });
@@ -212,6 +217,7 @@ export const logout = async (req, res) => {
   try {
     if (await isRedisAvailable()) {
       await client.del(`session:${sessionId}`);
+      await client.sRem(`userSessions:${userId}`, sessionId);
     }
     const updateSessionQuery = 'DELETE FROM sessions WHERE sessionId = ?';
     await new Promise((resolve, reject) => {
