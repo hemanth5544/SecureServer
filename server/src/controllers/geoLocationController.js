@@ -3,8 +3,9 @@ import db from "../index.js";
 
 export const geolocation = (req, res) => {
   const { latitude, longitude } = req.body;
-  const userId =  req.userId; 
-  const sessionId = req.sessionId; 
+  const userId = req.userId;
+  const sessionId = req.sessionId;
+
 
   if (!latitude || !longitude) {
     return res.status(400).json({ error: 'Latitude and longitude are required' });
@@ -15,18 +16,17 @@ export const geolocation = (req, res) => {
 
   const checkSessionQuery = `
     SELECT id FROM sessions
-    WHERE user_id = ? AND id = ? AND status = 'active'
+    WHERE user_id = ? AND sessionId = ? AND status = 'active'
     LIMIT 1
   `;
-  
+
   db.get(checkSessionQuery, [userId, sessionId], (err, session) => {
     if (err) {
       return res.status(500).json({ error: 'Database error while checking active session' });
     }
 
     if (session) {
-        console.log("it to updateeeeeeee");
-        
+      
       const updateSessionQuery = `
         UPDATE sessions
         SET latitude = ?, longitude = ?, updated_at = CURRENT_TIMESTAMP
@@ -39,16 +39,15 @@ export const geolocation = (req, res) => {
         return res.status(200).json({ message: 'Geolocation updated successfully' });
       });
     } else {
-
-        const insertSessionQuery = `
-        INSERT INTO sessions (user_id, ip_address, latitude, longitude, browser_info)
-        VALUES (?, ?, ?, ?, ?)
+      const insertSessionQuery = `
+        INSERT INTO sessions (user_id, ip_address, latitude, longitude, browser_info, sessionId)
+        VALUES (?, ?, ?, ?, ?, ?)
       `;
-      db.run(insertSessionQuery, [userId, ipAddress, latitude, longitude, browserInfo], function(err) {
+      db.run(insertSessionQuery, [userId, ipAddress, latitude, longitude, browserInfo, sessionId], function(err) {
         if (err) {
           return res.status(500).json({ error: 'Failed to save geolocation' });
         }
-        return res.status(200).json({ message: 'Geolocation saved successfully', sessionId: this.lastID });
+        return res.status(200).json({ message: 'Geolocation saved successfully', sessionId: sessionId });
       });
     }
   });
