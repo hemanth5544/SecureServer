@@ -8,7 +8,7 @@ import { error } from "console";
 
 export const user= async (req, res) => {
     db.get(
-      'SELECT id, email, twoFactorEnabled ,profileImage, name FROM users WHERE id = ?',
+      'SELECT id, email, twoFactorEnabled ,profileImage, name, created_at FROM users WHERE id = ?',
       [req.user.userId],
       (err, user) => {
         if (err) return res.status(500).json({ error: 'Server error' });

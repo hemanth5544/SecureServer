@@ -19,7 +19,12 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:5173', // allow requests from this origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // define the allowed HTTP methods (optional)
+  credentials: true, // if you need to support cookies or authentication (optional)
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 //TODO: last accesced in the device 
 //TODO: joined in "DD-MM_YYYY"
@@ -33,7 +38,8 @@ db.serialize(() => {
       twoFactorSecret TEXT,
       twoFactorEnabled INTEGER DEFAULT 0,
       profileImage TEXT,
-      name TEXT
+      name TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
 

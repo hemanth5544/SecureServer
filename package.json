@@ -1,5 +1,5 @@
 {
-  "name": "auth-2fa-system",
+  "name": "SecureServer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -20,7 +20,7 @@
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-globe.gl": "^2.32.0",
+    "react-globe.gl": "^2.33.1",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.22.2",
     "recharts": "^2.15.1",

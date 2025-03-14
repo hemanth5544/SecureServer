@@ -58,9 +58,9 @@ export const fetchGeolocations = (req, res) => {
     const sessionId = req.sessionId; 
   
     const fetchSessionsQuery = `
-      SELECT id, ip_address, latitude, longitude, browser_info, status
+      SELECT ip_address, latitude, longitude, browser_info, status
       FROM sessions
-      WHERE user_id = ? AND status = 'active'
+      WHERE user_id = ? 
     `;
   
     db.all(fetchSessionsQuery, [userId], (err, sessions) => {
@@ -70,10 +70,8 @@ export const fetchGeolocations = (req, res) => {
   
       if (sessions.length > 0) {
         const activeDevices = sessions.map(session => ({
-          id: session.id,
           ip: session.ip_address,
           browser: session.browser_info,
-          status: session.status,
           lat: session.latitude,
           lng: session.longitude,
         }));
