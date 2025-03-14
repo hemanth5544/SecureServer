@@ -7,6 +7,7 @@ interface User {
   name: string;
   profileImage?: string;
   twoFactorEnabled: boolean;
+  created_at:string
 }
 
 interface LastActivity {
