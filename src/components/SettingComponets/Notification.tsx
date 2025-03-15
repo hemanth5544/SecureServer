@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const EnableNotifications = ({ userId }) => {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
@@ -11,7 +12,7 @@ const EnableNotifications = ({ userId }) => {
       try {
         const authToken = localStorage.getItem('token');
         const sessionId = localStorage.getItem('sessionId');
-        const response = await axios.get(`http://localhost:3000/api/notifyStatus`, {
+        const response = await axios.get(`${apiUrl}/notifyStatus`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
             'x-session-id': sessionId,
@@ -37,7 +38,7 @@ const EnableNotifications = ({ userId }) => {
 
       const enableNotifications = !isNotificationsEnabled;
       await axios.post(
-        'http://localhost:3000/api/notify',
+        `${apiUrl}/notify`,
         { userId, enableNotifications },
         {
           headers: {

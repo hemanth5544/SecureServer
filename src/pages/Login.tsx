@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Lock, Mail } from 'lucide-react';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/login', formData);
+      const response = await axios.post(`${apiUrl}/login`, formData);
       setToken(response.data.sessionId)  
       login(response.data.token);  
       navigate('/dashboard');

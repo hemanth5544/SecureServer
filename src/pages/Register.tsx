@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { Mail, Lock, UserPlus } from 'lucide-react';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Register() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Register() {
     }
 
     try {
-      await axios.post('http://localhost:3000/api/signup', {
+      await axios.post(`${apiUrl}/signup`, {
         email: formData.email,
         password: formData.password
       });

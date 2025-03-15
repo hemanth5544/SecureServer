@@ -4,6 +4,7 @@ import { DetailsDashboard } from "../components/SecDasComponets/GraphComponet";
 import { Navbar } from "../components/Navbar";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const SecDashboard = () => {
   useEffect(() => {
@@ -15,7 +16,7 @@ export const SecDashboard = () => {
           const sessionId = localStorage.getItem("sessionId");
           if (token && sessionId) {
             axios.post(
-              "http://localhost:3000/api/geo-locations", 
+              `${apiUrl}/geo-locations`, 
               {
                 latitude,
                 longitude,

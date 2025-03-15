@@ -4,6 +4,7 @@ import { Shield, AlertTriangle, Clock, Monitor, Smartphone, Layers } from 'lucid
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import {GlobeComponent} from './GlobeComponent'
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const DetailsDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -23,7 +24,7 @@ export const DetailsDashboard = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:3000/api/devices",
+          `${apiUrl}/devices`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
