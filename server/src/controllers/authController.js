@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import db from "../index.js";
 import { authenticator } from "otplib";
-import { generateToken,sendEmail } from "../util.js";
+import { generateToken,sendEmail,sendLoginEmail} from "../util.js";
 import useragent from "useragent";
 import client from "../db/redisClient.js";
 import { generateHashedSessionId } from "../util.js";
@@ -57,7 +57,7 @@ const validateTwoFactorToken = (token, secret) => {
 
 const sendLoginNotification = async (email, name) => {
   const subject = 'Login Notification';
-  await sendEmail(email, subject, name, email).catch((emailError) => {
+  await sendLoginEmail(email, subject, name, email).catch((emailError) => {
     console.error('Error sending email:', emailError);
   });
 };
@@ -186,7 +186,7 @@ export const login = async (req, res) => {
         db.get('SELECT * FROM notifications WHERE user_id = ?', [user.id], async (err, notificationRecord) => {
           if (err) return handleDatabaseError(res, err);
           if (notificationRecord && notificationRecord.email_notifications_enabled) {
-            await sendLoginNotification(email, 'hemanth');
+            await sendLoginNotification(email, 'user');
           }
 
          await createSession(user.id, ipAddress, browserInfo, function (err,sessionId) {
