@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
+const apiUrl = import.meta.env.VITE_API_URL;
 interface User {
   id: string;
   email: string;
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const sessionId = localStorage.getItem('sessionId');
     if (token && sessionId) {
       axios
-        .get('http://localhost:3000/api/active-devices', {
+        .get(`${apiUrl}/active-devices`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'x-session-id': sessionId,
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   
     try {
-      const response = await axios.get('http://localhost:3000/api/user', {
+      const response = await axios.get(`${apiUrl}/user`, {
         headers: {
           Authorization: `Bearer ${token}`,  
           'x-session-id': sessionId        
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   
     try {
-      const response = await axios.get('http://localhost:3000/api/last-activity', {
+      const response = await axios.get(`${apiUrl}/last-activity`, {
         headers: {
           Authorization: `Bearer ${token}`,  
           'x-session-id': sessionId        
@@ -140,7 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const token= localStorage.getItem('token')
       const response = await axios.post(
-        'http://localhost:3000/api/logout', 
+        `${apiUrl}/logout`, 
         {},
         {
           headers: {

@@ -2,7 +2,7 @@ import { Bell } from "lucide-react";
 
 export const NotificationStatus = () => {
   return (
-    <div className="ml-5">
+    <div className="ml-5 mt-3">
       <div className="space-y-4">
         <div className="flex items-start space-x-5">
           <div className="p-3 flex bg-green-100 rounded-full">

@@ -18,6 +18,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
   const [activeSessions, setActiveSessions] = useState([]);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
 
   const fetchActiveSessions = async () => {
@@ -26,7 +27,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
       const sessionId = localStorage.getItem('sessionId');
 
       const response = await axios.post(
-        'http://localhost:3000/api/activeSessions',
+        `${apiUrl}/activeSessions`,
         {},
         {
           headers: {
@@ -48,7 +49,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
 
 
       await axios.post(
-        'http://localhost:3000/api/logoutAll',
+        `${apiUrl}/logoutAll`,
         {},
         {
           headers: {
@@ -74,7 +75,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
         navigate('/login');
       } else {
         await axios.post(
-          'http://localhost:3000/api/logout',
+          `${apiUrl}/logout`,
           {},
           {
             headers: {
@@ -97,7 +98,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
       const sessionId = localStorage.getItem('sessionId');
 
       const response = await axios.post(
-        'http://localhost:3000/api/2fa/enable',
+        `${apiUrl}/2fa/enable`,
         {},
         {
           headers: {
@@ -119,7 +120,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
       const sessionId = localStorage.getItem('sessionId');
 
       await axios.post(
-        'http://localhost:3000/api/2fa/verify',
+        `${apiUrl}/2fa/verify`,
         { token },
         {
           headers: {
@@ -142,7 +143,7 @@ export const SecuritySection: React.FC<SecuritySectionProps> = ({ user, logout }
       const sessionId = localStorage.getItem('sessionId');
 
       await axios.post(
-        'http://localhost:3000/api/2fa/disable',
+        `${apiUrl}/2fa/disable`,
         {},
         {
           headers: {

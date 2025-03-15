@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { User, Camera, Loader2, Mail, Edit, X, Calendar, Shield, Lock } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface ProfileSectionProps {
   user: any;
@@ -62,7 +63,7 @@ console.log(user,"userrrrrrr")
         formData.append('profileImage', selectedImage);
       }
 
-      await axios.post('http://localhost:3000/api/user/profile', formData, {
+      await axios.post(`${apiUrl}/user/profile`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'x-session-id': sessionId,

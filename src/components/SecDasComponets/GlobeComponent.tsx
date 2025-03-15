@@ -3,7 +3,9 @@ import { useAuth } from "../../context/AuthContext";
 
 export const GlobeComponent = () => {
   const { activeDevices } = useAuth(); 
-  console.log(activeDevices);
+  const filteredDevices = activeDevices.filter(
+    (device) => device.lat !== null && device.lng !== null
+  );
   
   return (
     <div className="absolute top-50 right-20 w-[400px] h-[400px] overflow-hidden">
@@ -12,7 +14,7 @@ export const GlobeComponent = () => {
         height={400}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
         backgroundColor="hsl(222.2, 84%, 4.9%)"
-        pointsData={activeDevices}
+        pointsData={filteredDevices}
         pointLat="lat"
         pointLng="lng"
         pointColor={() => "white"}

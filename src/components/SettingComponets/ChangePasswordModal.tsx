@@ -3,6 +3,7 @@ import { X, Eye, EyeOff, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface ChangePasswordModalProps {
   onClose: () => void;
@@ -66,7 +67,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ onClos
       const sessionId = localStorage.getItem("sessionId");
 
       await axios.post(
-        "http://localhost:3000/api/updatePass",
+        `${apiUrl}/updatePass`,
         {
           currentPassword,
           newPassword,
