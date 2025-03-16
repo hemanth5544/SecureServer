@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Secure Server</title>
+  <title>Login Notification</title>
   <style>
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
@@ -69,31 +69,61 @@
       margin: 20px 0;
       border-radius: 4px;
     }
+    .alert-box {
+      background-color: #2d2d2d;
+      border-left: 4px solid #03dac6;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .device-info {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #bbbbbb;
+    }
     strong {
       color: #bb86fc;
+    }
+    .security-note {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #333333;
+      font-size: 14px;
+      color: #bbbbbb;
     }
   </style>
 </head>
 <body>
   <div class="email-container">
     <div class="header">
-      <h1>Welcome to Our Service!</h1>
+      <h1>New Login Detected</h1>
     </div>
     <div class="content">
       <p>Hello, <strong>{{name}}</strong>!</p>
-      <p>Thank you for joining us! Your account has been successfully created with:</p>
+      <p>We detected a new login to your account.</p>
       
       <div class="info-box">
         <p style="margin: 0;"><strong>Email:</strong> {{email}}</p>
+        <div class="device-info">
+          <p style="margin: 5px 0 0 0;"><strong>Time:</strong> {{loginTime}}</p>
+          <p style="margin: 5px 0 0 0;"><strong>Device:</strong> {{device}}</p>
+          <p style="margin: 5px 0 0 0;"><strong>Location:</strong> {{location}}</p>
+        </div>
       </div>
       
-      <p>We're excited to have you on board. Get started right away by accessing your new account:</p>
+      <p>If this was you, no further action is needed. Your account is secure.</p>
+      
+      <div class="alert-box">
+        <p style="margin: 0; color: #03dac6;"><strong>Wasn't you?</strong> Secure your account immediately:</p>
+      </div>
       
       <div class="button-container">
-        <a href="http://localhost:5173/login" class="btn">Access Your Account</a>
+        <a href="http://localhost:5173/security" class="btn">Secure Account</a>
       </div>
       
-      <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+      <div class="security-note">
+        <p>For security reasons, we notify you of all login activities. If you have any concerns, please contact our support team immediately.</p>
+      </div>
     </div>
   </div>
 </body>
