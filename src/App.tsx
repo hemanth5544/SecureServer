@@ -25,6 +25,7 @@ function App() {
           <BrowserRouter>
             <div className="min-h-screen bg-background transition-colors duration-300">
               <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
