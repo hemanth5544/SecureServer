@@ -9,7 +9,7 @@
     "dev:all": " npm run dev",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postinstall": "cd server && npm install"
+   
   },
   "dependencies": {
     "@tanstack/react-query": "^5.66.9",
