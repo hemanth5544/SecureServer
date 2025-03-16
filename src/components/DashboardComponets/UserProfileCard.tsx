@@ -1,6 +1,8 @@
 import { User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Shield} from "lucide-react";
+const baseURl = import.meta.env.VITE_API_BASE;
+
 
 export const UserProfileCard = () => {
   const { user } = useAuth();
@@ -12,8 +14,8 @@ export const UserProfileCard = () => {
             <div className="w-16 h-16 rounded-full overflow-hidden bg-accent flex items-center justify-center">
               {user?.profileImage ? (
                 <img
-                  src={`http://localhost:3000${user.profileImage}`}
-                  alt="Profile"
+                src={`${baseURl}${user.profileImage}`}
+                alt="Profile"
                   className="w-full h-full object-cover"
                 />
               ) : (
