@@ -3,6 +3,7 @@ import { User, Camera, Loader2, Mail, Edit, X, Calendar, Shield, Lock } from 'lu
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 const apiUrl = import.meta.env.VITE_API_URL;
+const baseURl = import.meta.env.VITE_API_BASE;
 
 interface ProfileSectionProps {
   user: any;
@@ -146,7 +147,7 @@ console.log(user,"userrrrrrr")
             <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center border-4 border-background shadow-lg">
               {user?.profileImage ? (
                 <img
-                  src={`http://localhost:3000${user.profileImage}`}
+                  src={`${baseURl}${user.profileImage}`}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
