@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { Mail, Lock, UserPlus } from 'lucide-react';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function Register() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Register() {
     }
 
     try {
-      await axios.post('http://localhost:3000/api/signup', {
+      await axios.post(`${apiUrl}/signup`, {
         email: formData.email,
         password: formData.password
       });
@@ -33,68 +34,71 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-gray-800 p-8 rounded-xl shadow-2xl w-96 border border-gray-700">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Create an account</h2>
-          <p className="text-gray-600">Sign up to get started</p>
+          <h2 className="text-3xl font-bold text-white">Create an account</h2>
+          <p className="text-gray-400 mt-2">Sign up to get started</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <div className="mt-1 relative">
+            <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+            <div className="relative">
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="your@email.com"
               />
-              <Mail className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Mail className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <div className="mt-1 relative">
+            <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
+            <div className="relative">
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="••••••••"
               />
-              <Lock className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Lock className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
-            <div className="mt-1 relative">
+            <label className="block text-sm font-medium text-gray-300 mb-1">Confirm Password</label>
+            <div className="relative">
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                placeholder="••••••••"
               />
-              <Lock className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Lock className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200 font-medium"
           >
             <UserPlus className="inline-block w-5 h-5 mr-2" />
             Sign up
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-sm text-gray-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:text-blue-500">
+          <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium">
             Sign in
           </Link>
         </p>

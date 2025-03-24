@@ -1,33 +1,38 @@
 {
-  "name": "auth-2fa-system",
+  "name": "SecureServer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "server": "node server/src/index.js",
-    "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
+    "dev-front": " npm run dev",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postinstall": "cd server && npm install"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.66.9",
+    "axios": "^1.6.7",
+    "clsx": "^2.1.0",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "axios": "^1.6.7",
-    "react-router-dom": "^6.22.2",
+    "react-globe.gl": "^2.33.1",
     "react-hot-toast": "^2.4.1",
-    "@tanstack/react-query": "^5.24.1",
-    "clsx": "^2.1.0",
+    "react-router-dom": "^6.22.2",
+    "recharts": "^2.15.1",
     "tailwind-merge": "^2.2.1",
+    "three": "^0.174.0",
+    "three-render-objects": "^1.39.2",
+    "three-webgpu": "^0.0.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.174.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",
     "concurrently": "^8.2.2",
@@ -39,6 +44,6 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^5.4.2"
+    "vite": "^5.4.14"
   }
 }

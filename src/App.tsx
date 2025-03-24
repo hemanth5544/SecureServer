@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { SecDashboard } from './pages/SecDashboard';
 
 const queryClient = new QueryClient();
 
@@ -24,10 +25,11 @@ function App() {
           <BrowserRouter>
             <div className="min-h-screen bg-background transition-colors duration-300">
               <Routes>
+              <Route path="/" element={<Navigate to="/login" />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
-                  path="/"
+                  path="/dashboard"
                   element={
                     // <PrivateRoute>
                       <Dashboard />
@@ -42,7 +44,16 @@ function App() {
                     // </PrivateRoute>
                   }
                 />
+                   <Route
+                  path="/sec-das"
+                  element={
+                    // <PrivateRoute>
+                      < SecDashboard/>
+                    // </PrivateRoute>
+                  }
+                />
               </Routes>
+              
             </div>
           </BrowserRouter>
           <Toaster position="top-right" />
